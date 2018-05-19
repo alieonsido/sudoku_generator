@@ -48,8 +48,7 @@ int main(int argc, char const *argv[])
 	table_printer();
 	printf("The sukudu game start!\n");
 
-	//for player.
-	sukudu_space_position data;
+	
 	return 0;
 }
 
@@ -117,5 +116,13 @@ void problem_maker()
 
 void problem_answer()
 {
+	//for player.
+	sukudu_space_position data;
+	pthread_t row[9];
+	pthread_t column[9];
 	
+	for (uint8_t i = 0; i < 9; i++)
+	{
+		pthread_create(&row[i],NULL,check)
+	}
 }
