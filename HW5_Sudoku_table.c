@@ -9,13 +9,82 @@
 #include <pthread.h>
 
 extern int sukudu_table[10][10];
+
+int zero_checker(uint8_t block_startposition_row,
+				uint8_t block_endposition_row,
+				uint8_t block_startposition_column,
+				uint8_t block_endposition_column)
+{
+	uint8_t fullzero_flag=0;
+	uint8_t local_table[10][10]={}; //don't forget our arrary begin from 1.
+	for (int i = block_startposition_row; i < block_endposition_column; i++)
+	{
+		for (int j = block_startposition_column; j < block_endposition_column; j++)
+		{
+			if(sukudu_table[i][j]==0) fullzero_flag++;
+		}
+	}
+	if (fullzero_flag>=9)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
+}
+
+void* zero_check(void* block_number)
+{
+	int number = (int)block_number;
+	switch(number)
+	{
+		case 1:
+		{
+			pthread_exit((void*)zero_checker(1,4,1,4));
+		}
+		case 2:
+		{
+			pthread_exit((void*)zero_checker(4,7,1,4));
+		}
+		case 3:
+		{
+			pthread_exit((void*)zero_checker(7,10,1,4)); 
+		}
+		case 4:
+		{
+			pthread_exit((void*)zero_checker(1,4,4,7)); 
+		}
+		case 5:
+		{
+			pthread_exit((void*)zero_checker(4,7,4,7)); 
+		}
+		case 6:
+		{
+			pthread_exit((void*)zero_checker(7,10,4,7)); 
+		}
+		case 7:
+		{
+			pthread_exit((void*)zero_checker(1,4,7,10)); 
+		}
+		case 8:
+		{
+			pthread_exit((void*)zero_checker(4,7,7,10)); 
+		}
+		case 9:
+		{
+			pthread_exit((void*)zero_checker(7,10,7,10)); 
+		}
+	}
+}
+
 void table_cleaner_block(uint8_t block_startposition_row,
 						 uint8_t block_endposition_row,
 						 uint8_t block_startposition_column,
 						 uint8_t block_endposition_column)
 {
 	uint8_t local_table[10][10]={}; //don't forget our arrary begin from 1.
-	for (int i = block_startposition_row; i < block_endposition_column; i++)
+	for (int i = block_startposition_row; i < block_endposition_row; i++)
 			{
 				for (int j = block_startposition_column; j < block_endposition_column; j++)
 				{
@@ -243,7 +312,8 @@ void random_table_norepeat(uint8_t* numbertable)
 			}
 			else
 			{
-				i--; //reset to born random value.
+				i--; //because of the number is repeated.
+				//reset to born random value.
 				break;
 			}
 		}
@@ -254,7 +324,7 @@ uint8_t random_int_1_9()
 {
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
-	return ( ( ( ((rand()^tv.tv_sec)^(rand()^tv.tv_sec))%10 )+1 )%10 ); //get from 1 to 9.
+	return ( ( ( ((rand()|tv.tv_sec)^(rand()))%10 )+1 )%10 ); //get from 1 to 9.
 }
 
 

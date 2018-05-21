@@ -12,6 +12,12 @@ void table_cleaner_block(
 	uint8_t block_endposition_row,
 	uint8_t block_startposition_column,
 	uint8_t block_endposition_column);
+void* zero_check(void *);
+int zero_checker(uint8_t block_startposition_row,
+				uint8_t block_endposition_row,
+				uint8_t block_startposition_column,
+				uint8_t block_endposition_column);
+
 void table_printer();
 
 //about random.

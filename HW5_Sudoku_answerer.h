@@ -6,6 +6,7 @@
 
 void* table_answer_columncheck(void*);
 void* table_answer_rowcheck(void*);
+void table_block_check();
 
 typedef struct 
 {
