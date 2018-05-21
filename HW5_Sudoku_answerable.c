@@ -6,9 +6,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <sys/types.h>
-#include <sys/shm.h>
-#include <sys/mman.h>
+//#include <sys/shm.h>
+//#include <sys/mman.h>
 #include "HW5_Sudoku_table.h"
+#include "HW5_Sudoku_answerer.h"
 
 #include <fcntl.h>
 #include <pthread.h>
@@ -20,14 +21,8 @@ void signalhandler_fill();
 void signalhandler_check();
 
 void problem_maker();
-void problem_answer();
+void problem_answerer(uint8_t*);
 
-typedef struct 
-{
-	uint8_t row;
-	uint8_t column;
-
-}sukudu_space_position;
 
 
 // the more space is for random speed and convenient.
@@ -37,11 +32,12 @@ int sukudu_table[10][10] = {{},{},{},{},{},{},{},{},{},{}};
 
 int main(int argc, char const *argv[])
 {
-	bool answercomplete=0;
+	uint8_t answercomplete=0;
 	while(!answercomplete)
 	{
 		problem_maker();
-		problem_answer();
+		problem_answerer(&answercomplete);
+		
 	}
 	
 	// printf("after block check:\n");
@@ -114,15 +110,30 @@ void problem_maker()
 	}
 }
 
-void problem_answer()
+void problem_answerer(uint8_t* answercomplete)
 {
 	//for player.
-	sukudu_space_position data;
 	pthread_t row[9];
 	pthread_t column[9];
 	
+	uint8_t status = 0;
+
 	for (uint8_t i = 0; i < 9; i++)
 	{
-		pthread_create(&row[i],NULL,check)
+		pthread_create(&row[i],NULL,table_answer_columncheck,(void*)i);
 	}
+	for (uint8_t i = 0; i < 9; i++)
+	{
+		pthread_join(row[i],(void**)&status);
+		if (status==1)
+		{
+			*answercomplete=0;
+			break; // all program need to reset.
+		}
+		else if(status==0)
+		{
+			*answercomplete=1;
+		}
+	}
+	
 }
