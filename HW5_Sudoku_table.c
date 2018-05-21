@@ -9,29 +9,54 @@
 #include <pthread.h>
 
 extern int sukudu_table[10][10];
+extern int DIFFICULTY;
+int zero_counter = 0;
 
 int zero_checker(uint8_t block_startposition_row,
 				uint8_t block_endposition_row,
 				uint8_t block_startposition_column,
 				uint8_t block_endposition_column)
 {
-	uint8_t fullzero_flag=0;
+	int difficulty=0;
+	uint8_t zeroflag = 0;
+	switch(DIFFICULTY)
+	{
+		case 1:
+			difficulty=3;
+			break;
+		case 2:
+			difficulty=5;
+			break;
+		case 3:
+			difficulty=7;
+			break;
+
+	}
 	uint8_t local_table[10][10]={}; //don't forget our arrary begin from 1.
-	for (int i = block_startposition_row; i < block_endposition_column; i++)
+	for (int i = block_startposition_row; i < block_endposition_row; i++)
 	{
 		for (int j = block_startposition_column; j < block_endposition_column; j++)
 		{
-			if(sukudu_table[i][j]==0) fullzero_flag++;
+			if(sukudu_table[i][j]==0)
+			{
+				zeroflag++;
+				zero_counter++;
+			}
 		}
 	}
-	if (fullzero_flag>=9)
+	if (zero_counter <=65) 
+	//maybe too many information, 
+	//this will let question be invaild.
 	{
-		return 0;
-	}
-	else
-	{
+		for (int i = 0; i < difficulty*10; i++)
+		{
+			sukudu_table[block_startposition_row][random_int_1_9()]=0;
+		}
+		printf("Re-random\n");
 		return 1;
 	}
+	if(zeroflag>=8)
+		return 0;
 }
 
 void* zero_check(void* block_number)
@@ -324,7 +349,7 @@ uint8_t random_int_1_9()
 {
 	struct timeval tv;
 	gettimeofday(&tv,NULL);
-	return ( ( ( ((rand()|tv.tv_sec)^(rand()))%10 )+1 )%10 ); //get from 1 to 9.
+	return ( ( ( ((rand()^(tv.tv_usec)*1000000))%10 )+1 )%10 ); //get from 1 to 9.
 }
 
 
