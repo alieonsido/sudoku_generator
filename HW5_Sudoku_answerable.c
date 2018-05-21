@@ -5,29 +5,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <math.h>
 #include <sys/types.h>
-#include <sys/shm.h>
-#include <sys/mman.h>
+//#include <sys/shm.h>
+//#include <sys/mman.h>
 #include "HW5_Sudoku_table.h"
+#include "HW5_Sudoku_answerer.h"
 
 #include <fcntl.h>
 #include <pthread.h>
 
-void* sukudu_position_judge(void*);
 
 //for debug.
 void signalhandler_fill();
 void signalhandler_check();
 
 void problem_maker();
-void problem_answer();
+int problem_optimizer();
+void problem_answerer(uint8_t*);
+int DIFFICULTY;
 
-typedef struct 
-{
-	uint8_t row;
-	uint8_t column;
-
-}sukudu_space_position;
 
 
 // the more space is for random speed and convenient.
@@ -37,22 +34,110 @@ int sukudu_table[10][10] = {{},{},{},{},{},{},{},{},{},{}};
 
 int main(int argc, char const *argv[])
 {
-	bool answercomplete=0;
-	while(!answercomplete)
+	uint8_t optimize_complete = 0;
+	uint8_t answercomplete=0;
+	printf("hello, choose your Difficulty.\n");
+	printf("Easy=1 normal=2 hard=3.\n");
+	scanf("%d",&DIFFICULTY);
+
+	while(!optimize_complete)
 	{
 		problem_maker();
-		problem_answer();
+		optimize_complete = problem_optimizer();
+		//problem_answerer(&answercomplete);
+		//answercomplete=1;	
+		//optimize_complete = 1;
 	}
 	
 	// printf("after block check:\n");
 	table_printer();
 	printf("The sukudu game start!\n");
 
-	//for player.
-	sukudu_space_position data;
+	
 	return 0;
 }
 
+int problem_optimizer()
+{
+	pthread_t blocks[9];
+	uint8_t status[9];
+	int numbercounter[10] = {0};
+	uint8_t maxvalue,minvalue,max_number,min_number;
+	for (int i = 0; i < 9; i++)
+	{
+		pthread_create(&blocks[i],NULL,zero_check,(void*)(i+1));
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		pthread_join(blocks[i],(void**)&status[i]);
+		if(status[i]==0) 
+		{
+			for (; i < 9; i++)
+				pthread_cancel(blocks[i]);
+			return 0;
+		}
+	}
+
+	for (int i = 1; i < 10; i++)
+	{
+		for (int j = 1; j < 10; j++)
+		{
+			switch(sukudu_table[i][j])
+			{
+				case 1:
+					numbercounter[1]++;
+					break;
+				case 2:
+					numbercounter[2]++;
+					break;
+				case 3:
+					numbercounter[3]++;
+					break;
+				case 4:
+					numbercounter[4]++;
+					break;
+				case 5:
+					numbercounter[5]++;
+					break;
+				case 6:
+					numbercounter[6]++;
+					break;
+				case 7:
+					numbercounter[7]++;
+					break;
+				case 8:
+					numbercounter[8]++;
+					break;
+				case 9:
+					numbercounter[9]++;
+					break;
+			}
+			
+		}
+	}
+
+	for (int i = 1; i < 10; i++)
+	{
+		printf("the %d counter is %d\n",i,numbercounter[i]);
+		if (numbercounter[i] > maxvalue)
+		{
+			max_number = i;
+			maxvalue = numbercounter[i];	
+		}
+		if (numbercounter[i] < minvalue)
+		{
+			min_number = i;
+			minvalue = numbercounter[i];
+		}
+	}
+	printf("maxvalue= %d, minvalue = %d \n",maxvalue,minvalue);
+	if ((abs(maxvalue - minvalue)>5) && DIFFICULTY != 3)
+	{
+		return 0;
+	}
+	return 1;
+
+}
 
 void problem_maker()
 {
@@ -115,7 +200,30 @@ void problem_maker()
 	}
 }
 
-void problem_answer()
+void problem_answerer(uint8_t* answercomplete)
 {
+	//for player.
+	pthread_t row[9];
+	pthread_t column[9];
+	pthread_t blocks[9];
 	
+	uint8_t status = 0;
+
+	for (uint8_t i = 0; i < 9; i++)
+	{
+		pthread_create(&blocks[i],NULL,table_answer_columncheck,(void*)i);
+	}
+	for (uint8_t i = 0; i < 9; i++)
+	{
+		pthread_join(row[i],(void**)&status);
+		if (status==1)
+		{
+			*answercomplete=0;
+			break; // all program need to reset.
+		}
+		else if(status==0)
+		{
+			*answercomplete=1;
+		}
+	}
 }
