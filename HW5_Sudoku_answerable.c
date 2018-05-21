@@ -14,13 +14,13 @@
 #include <fcntl.h>
 #include <pthread.h>
 
-void* sukudu_position_judge(void*);
 
 //for debug.
 void signalhandler_fill();
 void signalhandler_check();
 
 void problem_maker();
+int problem_optimizer();
 void problem_answerer(uint8_t*);
 
 
@@ -32,12 +32,14 @@ int sukudu_table[10][10] = {{},{},{},{},{},{},{},{},{},{}};
 
 int main(int argc, char const *argv[])
 {
+	uint8_t optimize_complete = 0;
 	uint8_t answercomplete=0;
-	while(!answercomplete)
+	while(!optimize_complete)
 	{
 		problem_maker();
-		problem_answerer(&answercomplete);
-		
+		optimize_complete = 1; //problem_optimizer();
+		//problem_answerer(&answercomplete);
+		//answercomplete=1;	
 	}
 	
 	// printf("after block check:\n");
@@ -48,6 +50,33 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
+int problem_optimizer()
+{
+	pthread_t blocks[9];
+	uint8_t status,flag;
+	for (int i = 0; i < 9; i++)
+	{
+		pthread_create(&blocks[i],NULL,zero_check,(void*)(i+1));
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		pthread_join(blocks[i],(void**)&status);
+	}
+	if(status)
+	{
+		return 1;
+	}
+	else if(status==0)
+	{
+		flag++;
+	}
+
+	if(flag>=2)
+	{
+		return 0;
+	}
+
+}
 
 void problem_maker()
 {
@@ -136,5 +165,4 @@ void problem_answerer(uint8_t* answercomplete)
 			*answercomplete=1;
 		}
 	}
-	
 }
