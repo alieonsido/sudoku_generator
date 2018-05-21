@@ -115,12 +115,13 @@ void problem_answerer(uint8_t* answercomplete)
 	//for player.
 	pthread_t row[9];
 	pthread_t column[9];
+	pthread_t blocks[9];
 	
 	uint8_t status = 0;
 
 	for (uint8_t i = 0; i < 9; i++)
 	{
-		pthread_create(&row[i],NULL,table_answer_columncheck,(void*)i);
+		pthread_create(&blocks[i],NULL,table_answer_columncheck,(void*)i);
 	}
 	for (uint8_t i = 0; i < 9; i++)
 	{

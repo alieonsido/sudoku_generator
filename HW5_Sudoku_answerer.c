@@ -13,6 +13,7 @@
 //sukudu_space_position *data = (sukudu_space_position*)malloc(sizeof(sukudu_space_position));
 
 extern int sukudu_table[10][10];
+int sukutu_table_bruteforce[10][10];
 
 
 void* table_answer_columncheck(void* row_number)
@@ -30,6 +31,7 @@ void* table_answer_columncheck(void* row_number)
 	{
 		answertable[i] = i;	
 	}
+
 	// if there are repeated number, need to clean initial.
 	for (int i = 1; i < 10; i++)
 	{
@@ -41,30 +43,8 @@ void* table_answer_columncheck(void* row_number)
 		
 	}
 
-	//printf("begin to calc sukudu_table\n");
-
-	for (int i = 1; i < 10; i++)
-	{
-		if(sukudu_table[number][i]==0)
-		{
-			for (checknumber = 1; checknumber < 10; checknumber++)
-			{
-				if(answertable[checknumber]!=sukudu_table[number][i] && answertable[checknumber]!=0)
-				{
-					answertable[checknumber]=0;
-					break;
-				}
-			}
-			sukudu_table[number][i]=answertable[checknumber];
-			answertable[i]=0; //if we get the true value, the value need to clean to zero.
-		}
-		if(checknumber==10)
-		{
+		pthread_exit((void*)1); //status is 1, and it's error.	
 	
-			pthread_exit((void*)1); //status is 1, and it's error.
-			
-		}
-	}
 	pthread_exit((void*)0);
 
 }
