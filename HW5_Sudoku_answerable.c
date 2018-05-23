@@ -69,6 +69,7 @@ int main(int argc, char const *argv[])
 	printf("time waste: %lf\n",timer);
 
 	
+	
 	return 0;
 }
 
