@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 //about table
-void* table_filler();
+void* table_filler(void* row_number);
 void* table_checker_column(void*);
 void* table_checker_block(void*);
 void table_cleaner_block(

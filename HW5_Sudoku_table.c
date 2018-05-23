@@ -232,22 +232,21 @@ void* table_checker_column(void* column_number)
 
 
 
-void* table_filler() // fill all and clean.
+void* table_filler(void* row_number) // fill all and clean.
 {
 	uint8_t generator_number;
 	uint8_t numbertable[10] = {0,1,0,0,0,0,0,0,0,0};
+	int number = (int)row_number;
 
 	random_table_norepeat(numbertable); //finish for random table.
 	//row first
-	for(int i=1;i<10;i++)
+	for (int j=1; j<10; j++)
 	{
-		for (int j=1; j<10; j++)
-		{
-			sukudu_table[i][j] = numbertable[j];
-		}
-
-		random_table_norepeat(numbertable); // reset to born.
+		sukudu_table[number][j] = numbertable[j];
 	}
+
+	random_table_norepeat(numbertable); // reset to born.
+	
 
 }
 

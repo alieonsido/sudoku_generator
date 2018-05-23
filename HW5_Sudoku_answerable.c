@@ -145,7 +145,7 @@ void problem_maker()
 	pthread_t nine_block_threadid[9]; // every sukudu is nine block.
 	for(int i=0;i<9;i++)
 	{
-		pthread_create(&nine_block_threadid[i],NULL,table_filler,NULL);
+		pthread_create(&nine_block_threadid[i],NULL,table_filler,(void*)(i+1));
 	}
 	for(int i=0;i<9;i++)
 	{
