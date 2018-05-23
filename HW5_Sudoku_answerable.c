@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <math.h>
 #include <sys/types.h>
+#include <sys/time.h>
 //#include <sys/shm.h>
 //#include <sys/mman.h>
 #include "HW5_Sudoku_table.h"
@@ -40,6 +41,14 @@ int main(int argc, char const *argv[])
 	printf("Easy=1 normal=2 hard=3.\n");
 	scanf("%d",&DIFFICULTY);
 
+	//time calc
+	struct timeval tv_main;
+	gettimeofday(&tv_main,NULL);
+	double timer,usec;
+	usec = ((double)tv_main.tv_usec)/1000000;
+	timer = tv_main.tv_sec + usec;
+
+
 	while(!optimize_complete)
 	{
 		problem_maker();
@@ -52,6 +61,12 @@ int main(int argc, char const *argv[])
 	// printf("after block check:\n");
 	table_printer();
 	printf("The sukudu game start!\n");
+
+	//time calc
+	gettimeofday(&tv_main,NULL);
+	usec = ((double)tv_main.tv_usec)/1000000;
+	timer = tv_main.tv_sec + usec - timer;
+	printf("time waste: %lf\n",timer);
 
 	
 	return 0;
