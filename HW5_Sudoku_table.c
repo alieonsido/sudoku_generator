@@ -44,9 +44,12 @@ int zero_checker(uint8_t block_startposition_row,
 			}
 		}
 	}
+	if(zeroflag>=8)
+		return 0;
 	if (zero_counter <=65) 
 	//maybe too many information, 
 	//this will let question be invaild.
+	//notice:it has risk for race condition.
 	{
 		for (int i = 0; i < difficulty*10; i++)
 		{
@@ -55,8 +58,7 @@ int zero_checker(uint8_t block_startposition_row,
 		printf("Re-random\n");
 		return 1;
 	}
-	if(zeroflag>=8)
-		return 0;
+	
 }
 
 void* zero_check(void* block_number)
