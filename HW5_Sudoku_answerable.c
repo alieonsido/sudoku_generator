@@ -147,7 +147,11 @@ int problem_optimizer()
 		}
 	}
 	printf("maxvalue= %d, minvalue = %d \n",maxvalue,minvalue);
-	if ((abs(maxvalue - minvalue)>5) && DIFFICULTY != 3)
+	if (( maxvalue >=5 ||minvalue <=1)&& DIFFICULTY != 3)
+	{
+		return 0;
+	}
+	if ((maxvalue >=5 || minvalue !=0)&& DIFFICULTY == 3)
 	{
 		return 0;
 	}

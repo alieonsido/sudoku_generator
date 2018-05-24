@@ -28,7 +28,7 @@ int zero_checker(uint8_t block_startposition_row,
 			difficulty=5;
 			break;
 		case 3:
-			difficulty=7;
+			difficulty=70;
 			break;
 
 	}
@@ -39,11 +39,11 @@ int zero_checker(uint8_t block_startposition_row,
 		{
 			if(sukudu_table[i][j]==0)
 			{
-				zeroflag++;
 				zero_counter++;
 			}
 		}
 	}
+
 	if (zero_counter <=65) 
 	//maybe too many information, 
 	//this will let question be invaild.
@@ -52,11 +52,10 @@ int zero_checker(uint8_t block_startposition_row,
 		{
 			sukudu_table[block_startposition_row][random_int_1_9()]=0;
 		}
-		printf("Re-random\n");
+		//printf("Re-random\n");
 		return 1;
 	}
-	if(zeroflag>=8)
-		return 0;
+	
 }
 
 void* zero_check(void* block_number)
