@@ -43,12 +43,9 @@ int zero_checker(uint8_t block_startposition_row,
 			}
 		}
 	}
-<<<<<<< HEAD
 
-=======
 	if(zeroflag>=8)
 		return 0;
->>>>>>> d00b87ac81ebb7127d1fd5446175d3712338b887
 	if (zero_counter <=65) 
 	//maybe too many information, 
 	//this will let question be invaild.

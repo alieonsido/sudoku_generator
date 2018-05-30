@@ -66,7 +66,7 @@ int main(int argc, char const *argv[])
 	gettimeofday(&tv_main,NULL);
 	usec = ((double)tv_main.tv_usec)/1000000;
 	timer = tv_main.tv_sec + usec - timer;
-	printf("thread time waste: %lf\n",timer);
+	printf("single-thread time waste: %lf\n",timer);
 
 	
 	
@@ -166,14 +166,17 @@ void problem_maker()
 	for(int i=0;i<9;i++)
 	{
 		pthread_create(&nine_block_threadid[i],NULL,table_filler,(void*)(i+1));
-	}
-	for(int i=0;i<9;i++)
-	{
 		pthread_join(nine_block_threadid[i],NULL);
 	}
 
-	// printf("before check:\n");
-	// table_printer();
+	//for multi-thread.
+		// for(int i=0;i<9;i++)
+		// {
+		// 	pthread_join(nine_block_threadid[i],NULL);
+		// }
+
+		// printf("before check:\n");
+		// table_printer();
 	
 	//check blocks:
 	//at this point, the sukudu table is not true.
@@ -197,27 +200,30 @@ void problem_maker()
 		//in every row,check every column.
 		//in table, the begin number is 1, not zero.
 		pthread_create(&column_threadid[i],NULL,table_checker_column,(void *)(i+1));
-	}
-
-	for (int i = 0; i < 9; i++)
-	{
 		pthread_join(column_threadid[i],NULL);
 	}
 
-	// printf("after column check:\n");
-	// table_printer();
+	//for multi thread
+		// for (int i = 0; i < 9; i++)
+		// {
+		// 	pthread_join(column_threadid[i],NULL);
+		// }
+
+		// printf("after column check:\n");
+		// table_printer();
 
 	for (uint8_t i = 0; i < 9; i++)
 	{
 		//in every row,check every column.
 		//in table, the begin number is 1, not zero.
 		pthread_create(&block_threadid[i],NULL,table_checker_block,(void *)(i+1));
-	}
-
-	for (int i = 0; i < 9; i++)
-	{
 		pthread_join(block_threadid[i],NULL);
 	}
+
+	// for (int i = 0; i < 9; i++)
+	// {
+	// 	pthread_join(block_threadid[i],NULL);
+	// }
 }
 
 void problem_answerer(uint8_t* answercomplete)
